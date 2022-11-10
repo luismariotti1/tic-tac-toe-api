@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.6
+    ports:
+      - '${DB_PORT}:3306'
+    environment:
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+    db-data:
