@@ -16,7 +16,7 @@ export class AuthController {
   @Post("sign-in")
   async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
     let token = await this.authService.signIn(signInDto);
-    return res.status(200).cookie("access_token:", token.access_token, {
+    return res.status(200).cookie("access_token", token.access_token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
