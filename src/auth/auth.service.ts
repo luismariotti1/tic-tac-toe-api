@@ -14,7 +14,7 @@ export class AuthService {
     return await this.usersService.validate(credentials);
   }
 
-  async singIn(user: any) {
+  async signIn(user: any) {
     const response = await this.usersService.findOne(user.username);
     const payload = { username: response.username, sub: response.id };
     return {
