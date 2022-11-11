@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
+import * as bcrypt from 'bcrypt';
 
 export type User = any;
 
@@ -11,6 +12,7 @@ export class UsersService {
   ) {}
 
   async create(user: User): Promise<User> {
+    user.password = await bcrypt.hash(user.password, 10);
     return await this.userRepository.save(user);
   }
 }
