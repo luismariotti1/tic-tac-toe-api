@@ -15,12 +15,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post("sign-in")
   async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
-    let token = await this.authService.signIn(signInDto);
-    return res.status(200).cookie("access_token", token.access_token, {
+    const response = await this.authService.signIn(signInDto);
+    return res.status(200).cookie("access_token", response.access_token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-    }).send({success: true});
+    }).send({user: response.user});
   }
 
   @Post("sign-up")
