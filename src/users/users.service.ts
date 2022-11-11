@@ -1,7 +1,6 @@
 import { ConflictException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { SingInDto } from "../auth/dto/sing-in.dto";
 
 export type User = any;
 
@@ -13,6 +12,10 @@ export class UsersService {
   ) {
   }
 
+  async findOne(username: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({ where: { username } });
+  }
+
   async validate(credentials: any): Promise<User | undefined> {
     if (!credentials.email && !credentials.username) {
       throw new Error("Credentials must have email or username");
@@ -22,7 +25,8 @@ export class UsersService {
       where: [
         { email: credentials.email },
         { username: credentials.username }
-      ]
+      ],
+      select: ["id", "username", "email", "password"],
     });
 
     if (user && await bcrypt.compare(credentials.password, user.password)) {
@@ -36,7 +40,9 @@ export class UsersService {
   async create(user: User): Promise<User> {
     user.password = await bcrypt.hash(user.password, 10);
     try {
-      return await this.userRepository.save(user);
+      const response = await this.userRepository.save(user);
+      delete response.password;
+      return response;
     } catch (error) {
       if (error.sqlState === "23000") {
         throw new ConflictException("Username or Email already exists");
