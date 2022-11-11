@@ -10,9 +10,10 @@ import { ConfigModule } from "@nestjs/config";
   imports: [GameModule, AuthModule, UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,
-    })],
+    }),
+  ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {
 }
