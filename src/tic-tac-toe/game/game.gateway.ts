@@ -1,33 +1,38 @@
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { BoardService } from './board.service';
-import { JoinService } from "./join.service";
+import {
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
+} from "@nestjs/websockets";
+import { BoardService } from "./board.service";
+import { Socket } from "socket.io";
 
-@WebSocketGateway({cors: true})
+@WebSocketGateway({ namespace: "game" })
 export class GameGateway {
   @WebSocketServer() server;
 
-  constructor(private boardService: BoardService,
-              private joinService: JoinService) {}
-
-  @SubscribeMessage('joinGame')
-  joinGame(client, data): string {
-    this.updateBoard();
-    return this.joinService.joinGame(data.player);
+  constructor(private boardService: BoardService) {
   }
 
-  @SubscribeMessage('updateBoard')
-  updateBoard() {
-    this.server.emit('updateBoard', this.boardService.getBoard());
+  @SubscribeMessage("getBoard")
+  getBoard(client: Socket, room: string): void {
+    this.server.to(room).emit("updateBoard", this.boardService.getBoard());
   }
 
-  @SubscribeMessage('checkWinner')
-  checkWinner() {
+  @SubscribeMessage("mark")
+  handleMark(client, data) {
+    const { Row, Column, Marker } = JSON.parse(data);
+    this.boardService.mark(Row, Column, Marker);
 
+    this.server.emit("updateBoard", this.boardService.getBoard());
+
+    if (!this.boardService.checkWinner()) return;
+    this.server.emit("winner", Marker);
   }
 
-  @SubscribeMessage('makeMove')
-  makeMove(client, data) {
-    this.boardService.makeMove(data.row, data.column, data.player);
-    this.updateBoard();
+  @SubscribeMessage("restart")
+  handleRestart(client: Socket, room: string): void {
+    this.boardService.resetBoard();
+    this.server.to(room).emit("updateBoard", this.boardService.getBoard());
+    this.server.to(room).emit("restarted");
   }
 }

@@ -16,11 +16,16 @@ export class AuthController {
   @Post("sign-in")
   async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
     const response = await this.authService.signIn(signInDto);
-    return res.status(200).cookie("access_token", response.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-    }).send({user: response.user});
+    return res.status(200).send({
+      user: response.user,
+      access_token: response.access_token
+    })
+
+    // return res.status(200).cookie("access_token", response.access_token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "strict",
+    // }).send({user: response.user});
   }
 
   @Post("sign-up")
