@@ -3,14 +3,28 @@ import { GameRoom } from "./game-room";
 
 @Injectable()
 export class JoinService {
-  private rooms: any[] = [];
-  private roomId = 1;
+  // private rooms: any[] = [];
+  // private roomId = 1;
+  private players: number = 0;
 
-  joinRoom(player: any): any {
-    this.setUpRoom();
+  joinRoom(player: any, client: any): any {
+    client.join("room1");
+    this.players++;
+    if (this.players === 2) {
+      return { room: "room1", success: true, startGame: true, marker: "X" }
+    } else {
+      return { room: "room1", success: true, startGame: false, marker: "O" }
+    }
 
-    let room = this.rooms[this.rooms.length - 1];
-    room.joinRoom(player);
+    // console.log(player);
+
+    // this.setUpRoom();
+
+    // let room = this.rooms[this.rooms.length - 1];
+    // console.log(room.id)
+    // room.joinRoom(room.id, client);
+
+    // client.to(room.id).emit("startGame");
 
     // if (!this.checkIfRoomExists(room)) this.rooms.push(new GameRoom(room));
 
@@ -31,20 +45,20 @@ export class JoinService {
     // }
   }
 
-  private setUpRoom(): void {
-    // if the array is empty create a new room
-    if (this.rooms.length === 0) {
-      this.rooms.push(new GameRoom(this.roomId));
-      this.roomId++;
-      return;
-    }
+  // private setUpRoom(): void {
+  //   // if the array is empty create a new room
+  //   if (this.rooms.length === 0) {
+  //     this.rooms.push(new GameRoom(this.roomId));
+  //     this.roomId++;
+  //     return;
+  //   }
 
-    const lastRoom = this.rooms[this.rooms.length - 1];
-    if (lastRoom.checkIfRoomIsFull()) {
-      this.rooms.push(new GameRoom(this.roomId));
-      this.roomId++;
-    }
-  }
+  //   const lastRoom = this.rooms[this.rooms.length - 1];
+  //   if (lastRoom.checkIfRoomIsFull()) {
+  //     this.rooms.push(new GameRoom(this.roomId));
+  //     this.roomId++;
+  //   }
+  // }
 
   // private getRoom(room: string): GameRoom {
   //   return this.rooms.find((r) => r.roomName === room);

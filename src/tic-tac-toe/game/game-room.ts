@@ -7,11 +7,11 @@ export class GameRoom {
 
   constructor(id: number) {
     this.id = id;
-    console.log("Created room: " + this.id);
   }
 
-  public joinRoom(player: any): void {
+  public joinRoom(player: any, client: any): void {
     this.players.push(player);
+    client.join(this.id);
   }
 
   public checkIfRoomIsFull(): boolean {

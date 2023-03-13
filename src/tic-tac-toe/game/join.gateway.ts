@@ -1,5 +1,5 @@
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
-import { Socket } from "socket.io";
+import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Socket, Server } from "socket.io";
 import { JoinService } from "./join.service";
 // import { UseGuards } from "@nestjs/common";
 // import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
@@ -8,6 +8,7 @@ import { JoinService } from "./join.service";
 @WebSocketGateway({ namespace: "game" })
 // @UseGuards(JwtAuthGuard)
 export class JoinGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer() server: Server;
   private numOnline: number = 0;
 
   constructor(private joinService: JoinService) {
@@ -15,7 +16,12 @@ export class JoinGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("joinRoom")
   handleJoinRoom(client: Socket, player: any): void {
-    this.joinService.joinRoom(player);
+    const res = this.joinService.joinRoom(player, client);
+    if (res.startGame) {
+      this.server.to(res.room).emit("startGame");
+    } else {
+      client.emit("joinedRoom", player);
+    }
   }
 
   // leave a room
