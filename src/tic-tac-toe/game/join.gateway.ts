@@ -14,8 +14,8 @@ export class JoinGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage("joinRoom")
-  handleJoinRoom(client: Socket, room: string): void {
-    this.joinService.joinRoom(room, client);
+  handleJoinRoom(client: Socket, player: any): void {
+    this.joinService.joinRoom(player);
   }
 
   // leave a room

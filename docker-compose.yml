@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   mariadb:
-    container_name: mariadb
+    container_name: database
     image: mariadb:10.6
     ports:
       - '${DB_PORT}:3306'

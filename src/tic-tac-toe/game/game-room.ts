@@ -3,16 +3,15 @@ export class GameRoom {
   private playerTurn = 0;
   private markers: string[] = ["X", "O"];
   private maxPlayers: number = 2;
-  private roomName: string;
+  private id: number;
 
-  constructor(roomName: string) {
-    this.roomName = roomName;
+  constructor(id: number) {
+    this.id = id;
+    console.log("Created room: " + this.id);
   }
 
-  public joinRoom(player: any): boolean {
-    if (this.checkIfRoomIsFull()) return false;
+  public joinRoom(player: any): void {
     this.players.push(player);
-    return true;
   }
 
   public checkIfRoomIsFull(): boolean {
