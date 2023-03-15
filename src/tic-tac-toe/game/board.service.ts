@@ -1,88 +1,90 @@
 import { Injectable } from "@nestjs/common";
+import { GameRoomService } from "./game-room.service";
 import { GridSpace } from "./grid-space";
 
 @Injectable()
 export class BoardService {
   public players: any[] = [];
 
-  private board: GridSpace[][] = [];
-
-  constructor() {
-    this.resetBoard();
+  constructor(private gameRoomService: GameRoomService) {
   }
 
-  getBoard(): GridSpace[][] {
-    return this.board;
+  getBoard(room: string): GridSpace[][] {
+    return this.gameRoomService.findRoom(room).board;
   }
 
-  mark(row: number, column: number, marker: string): void {
-    this.board[row][column].setMark(marker);
-    this.checkWinner();
+  mark(room:string, row: number, column: number, marker: string): void {
+    console.log("marking");
+    let board = this.gameRoomService.findRoom(room);
+    console.log("board: ", board);
+    // board[row][column].setMark(marker);
+    // this.checkWinner();
   }
 
-  resetBoard(): void {
+  resetBoard(room: string): void {
+    let board = this.getBoard(room);
     for (let i = 0; i < 3; i++) {
-      this.board[i] = [];
+      board[i] = [];
       for (let j = 0; j < 3; j++) {
-        this.board[i][j] = new GridSpace();
-        this.board[i][j].setRow(i);
-        this.board[i][j].setColumn(j);
+        board[i][j] = new GridSpace();
+        board[i][j].setRow(i);
+        board[i][j].setColumn(j);
       }
     }
   }
 
-  checkWinner(): boolean {
-    let winner = false;
-    if (this.checkRows() || this.checkColumns() || this.checkDiagonals()) {
-      winner = true;
-    }
-    return winner;
-    // this.checkTie();
-  }
+  // checkWinner(): boolean {
+  //   let winner = false;
+  //   if (this.checkRows() || this.checkColumns() || this.checkDiagonals()) {
+  //     winner = true;
+  //   }
+  //   return winner;
+  //   // this.checkTie();
+  // }
 
-  private checkRows(): boolean {
-    let winner = false;
-    this.board.forEach((row) => {
-      if (row.every((value) => value.getMark() === row[0].getMark() && value.getMark() !== "")) {
-        winner = true;
-      }
-    });
-    return winner;
-  }
+  // private checkRows(): boolean {
+  //   let winner = false;
+  //   this.board.forEach((row) => {
+  //     if (row.every((value) => value.getMark() === row[0].getMark() && value.getMark() !== "")) {
+  //       winner = true;
+  //     }
+  //   });
+  //   return winner;
+  // }
 
-  private checkColumns(): boolean {
-    let winner = false;
-    for (let i = 0; i < this.board.length; i++) {
-      if (
-        this.board[0][i].getMark() === this.board[1][i].getMark() &&
-        this.board[0][i].getMark() === this.board[2][i].getMark() &&
-        this.board[0][i].getMark() !== ""
-      ) {
-        winner = true;
-      }
-    }
-    return winner;
-  }
+  // private checkColumns(): boolean {
+  //   let winner = false;
+  //   for (let i = 0; i < this.board.length; i++) {
+  //     if (
+  //       this.board[0][i].getMark() === this.board[1][i].getMark() &&
+  //       this.board[0][i].getMark() === this.board[2][i].getMark() &&
+  //       this.board[0][i].getMark() !== ""
+  //     ) {
+  //       winner = true;
+  //     }
+  //   }
+  //   return winner;
+  // }
 
-  private checkDiagonals(): boolean {
-    let winner = false;
+  // private checkDiagonals(): boolean {
+  //   let winner = false;
 
-    if (
-      this.board[0][0].getMark() === this.board[1][1].getMark() &&
-      this.board[0][0].getMark() === this.board[2][2].getMark() &&
-      this.board[0][0].getMark() !== ""
-    ) {
-      winner = true;
-    }
+  //   if (
+  //     this.board[0][0].getMark() === this.board[1][1].getMark() &&
+  //     this.board[0][0].getMark() === this.board[2][2].getMark() &&
+  //     this.board[0][0].getMark() !== ""
+  //   ) {
+  //     winner = true;
+  //   }
 
-    if (
-      this.board[0][2].getMark() === this.board[1][1].getMark() &&
-      this.board[0][2].getMark() === this.board[2][0].getMark() &&
-      this.board[0][2].getMark() !== ""
-    ) {
-      winner = true;
-    }
+  //   if (
+  //     this.board[0][2].getMark() === this.board[1][1].getMark() &&
+  //     this.board[0][2].getMark() === this.board[2][0].getMark() &&
+  //     this.board[0][2].getMark() !== ""
+  //   ) {
+  //     winner = true;
+  //   }
 
-    return winner;
-  }
+  //   return winner;
+  // }
 }
