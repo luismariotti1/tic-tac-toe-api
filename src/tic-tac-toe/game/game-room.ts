@@ -1,12 +1,13 @@
 import { Player } from './player';
+import { GridSpace } from './grid-space';
 
 export class GameRoom {
   public id: string;
-  public players: Player[] = [];
   private maxPlayers = 2;
   private numberOfPlayers = 0;
-
   private markers = ['X', 'O'];
+  public players: Player[] = [];
+  public gameState: GridSpace[][] = [];
 
   constructor(id: string) {
     this.id = 'room' + id;

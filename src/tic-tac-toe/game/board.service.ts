@@ -4,84 +4,94 @@ import { GridSpace } from './grid-space';
 
 @Injectable()
 export class BoardService {
-  public players: any[] = [];
-
   constructor(private gameRoomService: GameRoomService) {}
 
-  // getBoard(room: string): GridSpace[][] {
-  //   return this.gameRoomService.findRoom(room).board;
-  // }
-  //
-  // mark(room: string, row: number, column: number, marker: string): void {
-  //   const board = this.getBoard(room);
-  //   board[row][column].setMark(marker);
-  //   // this.checkWinner();
-  // }
-  //
-  // resetBoard(room: string): void {
-  //   const board = this.getBoard(room);
-  //   for (let i = 0; i < 3; i++) {
-  //     board[i] = [];
-  //     for (let j = 0; j < 3; j++) {
-  //       board[i][j] = new GridSpace();
-  //       board[i][j].setRow(i);
-  //       board[i][j].setColumn(j);
-  //     }
-  //   }
-  // }
+  mark(
+    room: string,
+    row: number,
+    column: number,
+    marker: string,
+  ): GridSpace[][] {
+    const board = this.gameRoomService.findGameRoom(room).gameState;
+    board[row][column].setMark(marker);
+    return board;
+    // this.checkWinner();
+  }
 
-  // checkWinner(): boolean {
-  //   let winner = false;
-  //   if (this.checkRows() || this.checkColumns() || this.checkDiagonals()) {
-  //     winner = true;
-  //   }
-  //   return winner;
-  //   // this.checkTie();
-  // }
+  resetBoard(room: string): void {
+    const board = this.gameRoomService.findGameRoom(room).gameState;
+    for (let i = 0; i < 3; i++) {
+      board[i] = [];
+      for (let j = 0; j < 3; j++) {
+        board[i][j] = new GridSpace();
+        board[i][j].setRow(i);
+        board[i][j].setColumn(j);
+      }
+    }
+  }
 
-  // private checkRows(): boolean {
-  //   let winner = false;
-  //   this.board.forEach((row) => {
-  //     if (row.every((value) => value.getMark() === row[0].getMark() && value.getMark() !== "")) {
-  //       winner = true;
-  //     }
-  //   });
-  //   return winner;
-  // }
+  checkWinner(room: string): boolean {
+    const board = this.gameRoomService.findGameRoom(room).gameState;
+    let winner = false;
+    if (
+      this.checkRows(board) ||
+      this.checkColumns(board) ||
+      this.checkDiagonals(board)
+    ) {
+      winner = true;
+    }
+    return winner;
+    // this.checkTie();
+  }
 
-  // private checkColumns(): boolean {
-  //   let winner = false;
-  //   for (let i = 0; i < this.board.length; i++) {
-  //     if (
-  //       this.board[0][i].getMark() === this.board[1][i].getMark() &&
-  //       this.board[0][i].getMark() === this.board[2][i].getMark() &&
-  //       this.board[0][i].getMark() !== ""
-  //     ) {
-  //       winner = true;
-  //     }
-  //   }
-  //   return winner;
-  // }
+  private checkRows(board: GridSpace[][]): boolean {
+    let winner = false;
+    board.forEach((row) => {
+      if (
+        row.every(
+          (value) =>
+            value.getMark() === row[0].getMark() && value.getMark() !== '',
+        )
+      ) {
+        winner = true;
+      }
+    });
+    return winner;
+  }
 
-  // private checkDiagonals(): boolean {
-  //   let winner = false;
+  private checkColumns(board: GridSpace[][]): boolean {
+    let winner = false;
+    for (let i = 0; i < board.length; i++) {
+      if (
+        board[0][i].getMark() === board[1][i].getMark() &&
+        board[0][i].getMark() === board[2][i].getMark() &&
+        board[0][i].getMark() !== ''
+      ) {
+        winner = true;
+      }
+    }
+    return winner;
+  }
 
-  //   if (
-  //     this.board[0][0].getMark() === this.board[1][1].getMark() &&
-  //     this.board[0][0].getMark() === this.board[2][2].getMark() &&
-  //     this.board[0][0].getMark() !== ""
-  //   ) {
-  //     winner = true;
-  //   }
+  private checkDiagonals(board: GridSpace[][]): boolean {
+    let winner = false;
 
-  //   if (
-  //     this.board[0][2].getMark() === this.board[1][1].getMark() &&
-  //     this.board[0][2].getMark() === this.board[2][0].getMark() &&
-  //     this.board[0][2].getMark() !== ""
-  //   ) {
-  //     winner = true;
-  //   }
+    if (
+      board[0][0].getMark() === board[1][1].getMark() &&
+      board[0][0].getMark() === board[2][2].getMark() &&
+      board[0][0].getMark() !== ''
+    ) {
+      winner = true;
+    }
 
-  //   return winner;
-  // }
+    if (
+      board[0][2].getMark() === board[1][1].getMark() &&
+      board[0][2].getMark() === board[2][0].getMark() &&
+      board[0][2].getMark() !== ''
+    ) {
+      winner = true;
+    }
+
+    return winner;
+  }
 }

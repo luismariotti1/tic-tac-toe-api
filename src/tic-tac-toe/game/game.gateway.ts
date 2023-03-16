@@ -31,17 +31,12 @@ export class GameGateway {
   @SubscribeMessage('mark')
   handleMark(client, data) {
     const { Row, Column, Marker, Room } = JSON.parse(data);
+    const gameState = this.boardService.mark(Room, Row, Column, Marker);
 
-    // this.boardService.mark(Room, Row, Column, Marker);
-    // show the id of the clients in the room
-    // console.log(
-    //   'clients in room',
-    //   this.server.sockets.adapter.rooms.get(Room)
-    // );
-    // this.server.to(Room).emit('updateBoard', this.boardService.getBoard(Room));
+    this.server.to(Room).emit('updateBoard', gameState);
 
-    // if (!this.boardService.checkWinner()) return;
-    // this.server.emit("winner", Marker);
+    if (!this.boardService.checkWinner(Room)) return;
+    this.server.emit('winner', Marker);
   }
 
   @SubscribeMessage('restart')

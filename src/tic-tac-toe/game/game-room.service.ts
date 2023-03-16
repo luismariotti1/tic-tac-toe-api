@@ -26,7 +26,12 @@ export class GameRoomService {
     return this.gameRooms[this.gameRooms.length - 1];
   }
 
+  findGameRoom(roomId: string): GameRoom | null {
+    return this.gameRooms.find((gameRoom) => gameRoom.id === roomId) || null;
+  }
+
   findPlayer(userId: string): Player | null {
+    console.log(userId)
     for (let i = 0; i < this.gameRooms.length; i++) {
       const player = this.gameRooms[i].findPlayer(userId);
       if (player) {

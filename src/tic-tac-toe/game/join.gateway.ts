@@ -20,16 +20,15 @@ export class JoinGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private joinService: JoinService,
-    private BoardService: BoardService,
+    private boardService: BoardService,
   ) {}
 
   @SubscribeMessage('joinRoom')
   handleJoinRoom(client: Socket, userId: string): void {
     const res = this.joinService.joinRoom(userId, client);
-    console.log(res);
     client.emit('joinedRoom');
-    this.count++;
     if (res.startGame) {
+      this.boardService.resetBoard(res.room);
       this.server.to(res.room).emit('startGame');
     }
   }
