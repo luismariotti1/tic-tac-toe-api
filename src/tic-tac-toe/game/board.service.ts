@@ -6,20 +6,24 @@ import { GridSpace } from './grid-space';
 export class BoardService {
   constructor(private gameRoomService: GameRoomService) {}
 
+  getBoard(room: string): GridSpace[][] {
+    return this.gameRoomService.findGameRoom(room).gameState;
+  }
+
   mark(
     room: string,
     row: number,
     column: number,
     marker: string,
   ): GridSpace[][] {
-    const board = this.gameRoomService.findGameRoom(room).gameState;
+    const board = this.getBoard(room);
     board[row][column].setMark(marker);
     return board;
     // this.checkWinner();
   }
 
   resetBoard(room: string): void {
-    const board = this.gameRoomService.findGameRoom(room).gameState;
+    const board = this.getBoard(room);
     for (let i = 0; i < 3; i++) {
       board[i] = [];
       for (let j = 0; j < 3; j++) {
@@ -31,7 +35,7 @@ export class BoardService {
   }
 
   checkWinner(room: string): boolean {
-    const board = this.gameRoomService.findGameRoom(room).gameState;
+    const board = this.getBoard(room);
     let winner = false;
     if (
       this.checkRows(board) ||
