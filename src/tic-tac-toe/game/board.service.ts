@@ -34,6 +34,23 @@ export class BoardService {
     }
   }
 
+  checkTie(room: string): boolean {
+    const board = this.getBoard(room);
+    let isTie = true;
+
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j].getMark() === '') {
+          isTie = false;
+          break;
+        }
+      }
+      if (!isTie) break;
+    }
+
+    return isTie;
+  }
+
   checkWinner(room: string): boolean {
     const board = this.getBoard(room);
     let winner = false;
@@ -45,7 +62,6 @@ export class BoardService {
       winner = true;
     }
     return winner;
-    // this.checkTie();
   }
 
   private checkRows(board: GridSpace[][]): boolean {

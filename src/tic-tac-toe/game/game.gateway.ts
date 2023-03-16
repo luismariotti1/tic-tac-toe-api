@@ -28,9 +28,15 @@ export class GameGateway {
     const gameState = this.boardService.mark(Room, Row, Column, Marker);
 
     this.server.to(Room).emit('updateBoard', gameState);
+    const hasWinner = this.boardService.checkWinner(Room);
 
-    if (!this.boardService.checkWinner(Room)) return;
-    this.server.emit('winner', Marker);
+    if (!hasWinner && this.boardService.checkTie(Room)) {
+      this.server.to(Room).emit('winner', 'tie');
+    }
+
+    if (hasWinner) {
+      this.server.to(Room).emit('winner', Marker);
+    }
   }
 
   @SubscribeMessage('restart')
