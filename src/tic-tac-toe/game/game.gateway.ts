@@ -27,6 +27,13 @@ export class GameGateway {
     const { Row, Column, Marker, Room } = JSON.parse(data);
     const gameState = this.boardService.mark(Room, Row, Column, Marker);
 
+    this.gameRoomService.changeTurn(Room);
+    const players = this.gameRoomService.getPlayers(Room);
+    players.forEach((player) => {
+      console.log(player);
+      this.server.to(player.socketId).emit('turn', player.isTurn);
+    });
+
     this.server.to(Room).emit('updateBoard', gameState);
     const hasWinner = this.boardService.checkWinner(Room);
 

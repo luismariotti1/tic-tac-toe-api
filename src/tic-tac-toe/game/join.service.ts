@@ -14,7 +14,7 @@ export class JoinService {
     const gameRoom = this.gameRoomService.getGameRoom();
     const marker = gameRoom.getMarker();
 
-    const player = new Player(userId, marker, gameRoom.id);
+    const player = new Player(userId, marker, gameRoom.id, client.id);
     gameRoom.addPlayer(player);
     client.join(gameRoom.id);
 
