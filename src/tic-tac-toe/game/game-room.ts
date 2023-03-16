@@ -6,8 +6,10 @@ export class GameRoom {
   private maxPlayers = 2;
   private numberOfPlayers = 0;
 
+  private markers = ['X', 'O'];
+
   constructor(id: string) {
-    this.id = id;
+    this.id = 'room' + id;
   }
 
   public addPlayer(player: Player): void {
@@ -17,5 +19,13 @@ export class GameRoom {
 
   checkIfRoomIsFull(): boolean {
     return this.numberOfPlayers === this.maxPlayers;
+  }
+
+  getMarker(): string {
+    return this.markers[this.numberOfPlayers];
+  }
+
+  findPlayer(userId: string): any {
+    return this.players.find((player) => player.id === userId);
   }
 }

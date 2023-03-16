@@ -6,32 +6,21 @@ import { Player } from './player';
 
 @Injectable()
 export class JoinService {
-  private id = 1;
-  private gameRooms: GameRoom[] = [];
   constructor(private gameRoomService: GameRoomService) {}
 
   joinRoom(userId: string, client: Socket): any {
-    const roomId = 'room' + this.id;
-    let readyToStart = false;
+    this.gameRoomService.setupGameRoom();
 
-    if (this.gameRooms.length === 0) {
-      this.gameRooms.push(new GameRoom(roomId));
-    }
+    const gameRoom = this.gameRoomService.getGameRoom();
+    const marker = gameRoom.getMarker();
 
-    const gameRoom = this.gameRooms[this.gameRooms.length - 1];
-    console.log(this.gameRooms.length);
-
-    const player = new Player(userId);
+    const player = new Player(userId, marker, gameRoom.id);
     gameRoom.addPlayer(player);
+    client.join(gameRoom.id);
 
-    if (gameRoom.checkIfRoomIsFull()) {
-      readyToStart = true;
-      this.id++;
-      this.gameRooms.push(new GameRoom(roomId));
-    }
+    // console.log(gameRoom);
 
-    console.log(roomId);
-    client.join(roomId);
+    const readyToStart = this.gameRoomService.getGameRoom().checkIfRoomIsFull();
 
     return {
       room: gameRoom.id,

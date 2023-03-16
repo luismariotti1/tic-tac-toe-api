@@ -8,27 +8,27 @@ export class BoardService {
 
   constructor(private gameRoomService: GameRoomService) {}
 
-  getBoard(room: string): GridSpace[][] {
-    return this.gameRoomService.findRoom(room).board;
-  }
-
-  mark(room: string, row: number, column: number, marker: string): void {
-    const board = this.getBoard(room);
-    board[row][column].setMark(marker);
-    // this.checkWinner();
-  }
-
-  resetBoard(room: string): void {
-    const board = this.getBoard(room);
-    for (let i = 0; i < 3; i++) {
-      board[i] = [];
-      for (let j = 0; j < 3; j++) {
-        board[i][j] = new GridSpace();
-        board[i][j].setRow(i);
-        board[i][j].setColumn(j);
-      }
-    }
-  }
+  // getBoard(room: string): GridSpace[][] {
+  //   return this.gameRoomService.findRoom(room).board;
+  // }
+  //
+  // mark(room: string, row: number, column: number, marker: string): void {
+  //   const board = this.getBoard(room);
+  //   board[row][column].setMark(marker);
+  //   // this.checkWinner();
+  // }
+  //
+  // resetBoard(room: string): void {
+  //   const board = this.getBoard(room);
+  //   for (let i = 0; i < 3; i++) {
+  //     board[i] = [];
+  //     for (let j = 0; j < 3; j++) {
+  //       board[i][j] = new GridSpace();
+  //       board[i][j].setRow(i);
+  //       board[i][j].setColumn(j);
+  //     }
+  //   }
+  // }
 
   // checkWinner(): boolean {
   //   let winner = false;
