@@ -1,28 +1,25 @@
-import { Injectable } from "@nestjs/common";
-import { GameRoomService } from "./game-room.service";
-import { GridSpace } from "./grid-space";
+import { Injectable } from '@nestjs/common';
+import { GameRoomService } from './game-room.service';
+import { GridSpace } from './grid-space';
 
 @Injectable()
 export class BoardService {
   public players: any[] = [];
 
-  constructor(private gameRoomService: GameRoomService) {
-  }
+  constructor(private gameRoomService: GameRoomService) {}
 
   getBoard(room: string): GridSpace[][] {
     return this.gameRoomService.findRoom(room).board;
   }
 
-  mark(room:string, row: number, column: number, marker: string): void {
-    console.log("marking");
-    let board = this.gameRoomService.findRoom(room);
-    console.log("board: ", board);
-    // board[row][column].setMark(marker);
+  mark(room: string, row: number, column: number, marker: string): void {
+    const board = this.getBoard(room);
+    board[row][column].setMark(marker);
     // this.checkWinner();
   }
 
   resetBoard(room: string): void {
-    let board = this.getBoard(room);
+    const board = this.getBoard(room);
     for (let i = 0; i < 3; i++) {
       board[i] = [];
       for (let j = 0; j < 3; j++) {
