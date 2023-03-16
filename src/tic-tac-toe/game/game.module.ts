@@ -4,6 +4,7 @@ import { BoardService } from './board.service';
 import { JoinService } from './join.service';
 import { JoinGateway } from './join.gateway';
 import { GameRoomService } from './game-room.service';
+import { UsersModule } from '../../users/users.module';
 
 @Module({
   providers: [
@@ -11,7 +12,7 @@ import { GameRoomService } from './game-room.service';
     BoardService,
     JoinService,
     JoinGateway,
-    GameRoomService
-  ]
+    GameRoomService,
+  ],
 })
 export class GameModule {}

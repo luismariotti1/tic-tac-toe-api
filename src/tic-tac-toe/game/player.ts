@@ -1,6 +1,7 @@
 export class Player {
   public id: string;
   public socketId: string;
+  public username: string;
   public room: string;
   public marker: string;
   public isTurn;

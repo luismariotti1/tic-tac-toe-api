@@ -1,15 +1,23 @@
-import { ConflictException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Repository } from "typeorm";
-import * as bcrypt from "bcrypt";
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 export type User = any;
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject("USER_REPOSITORY")
-    private userRepository: Repository<User>
-  ) {
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
+  ) {}
+
+  async findOneById(id: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async findOne(username: string): Promise<User | undefined> {
@@ -18,18 +26,15 @@ export class UsersService {
 
   async validate(credentials: any): Promise<User | undefined> {
     if (!credentials.email && !credentials.username) {
-      throw new Error("Credentials must have email or username");
+      throw new Error('Credentials must have email or username');
     }
 
     const user = await this.userRepository.findOne({
-      where: [
-        { email: credentials.email },
-        { username: credentials.username }
-      ],
-      select: ["id", "username", "email", "password"],
+      where: [{ email: credentials.email }, { username: credentials.username }],
+      select: ['id', 'username', 'email', 'password'],
     });
 
-    if (user && await bcrypt.compare(credentials.password, user.password)) {
+    if (user && (await bcrypt.compare(credentials.password, user.password))) {
       const { password, ...result } = user;
       return result;
     }
@@ -44,8 +49,8 @@ export class UsersService {
       delete response.password;
       return response;
     } catch (error) {
-      if (error.sqlState === "23000") {
-        throw new ConflictException("Username or Email already exists");
+      if (error.sqlState === '23000') {
+        throw new ConflictException('Username or Email already exists');
       } else {
         throw new InternalServerErrorException();
       }
